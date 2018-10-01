@@ -5,11 +5,14 @@ import com.geopagos.rest_api.shapes.entity.Circle;
 import com.geopagos.rest_api.shapes.entity.Rectangle;
 import com.geopagos.rest_api.shapes.entity.Triangle;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.Resources;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,80 +26,110 @@ public class ShapesResource {
     ShapeService shapeService;
 
     @GetMapping("/circles")
-    public Resources<Resource<Circle>> listCircles() {
+    public ResponseEntity listCircles() {
         List<Resource<Circle>> circles = shapeService.listCircles().stream()
                 .map(circle -> new Resource<>(circle,
                         linkTo(methodOn(ShapesResource.class).getCircle(circle.getId())).withSelfRel(),
                         linkTo(methodOn(ShapesResource.class).listCircles()).withRel("circles")))
                 .collect(Collectors.toList());
-        return new Resources<>(circles, linkTo(methodOn(ShapesResource.class).listCircles()).withSelfRel());
+        Resources<Resource<Circle>> responseBody = new Resources<>(circles, linkTo(methodOn(ShapesResource.class).listCircles()).withSelfRel());
+        return ResponseEntity.ok(responseBody);
     }
 
     @GetMapping("/circles/{id}")
-    public Resource<Circle> getCircle(@PathVariable("id") Long id) {
+    public ResponseEntity getCircle(@PathVariable("id") Long id) {
         Circle circle = shapeService.getCircleById(id);
-        return new Resource<>(circle,
-                linkTo(methodOn(ShapesResource.class).getCircle(circle.getId())).withSelfRel(),
-                linkTo(methodOn(ShapesResource.class).listCircles()).withRel("circles"));
+
+        if (circle == null) {
+            return ResponseEntity.notFound().build();
+        } else {
+            Resource<Circle> responseBody = new Resource<>(circle,
+                    linkTo(methodOn(ShapesResource.class).getCircle(circle.getId())).withSelfRel(),
+                    linkTo(methodOn(ShapesResource.class).listCircles()).withRel("circles"));
+            return ResponseEntity.ok(responseBody);
+        }
     }
 
     @PostMapping("/circles")
-    public Resource<Circle> addCircle(@RequestBody Circle circle) {
+    public ResponseEntity addCircle(@RequestBody Circle circle) {
         Circle addedCircle = shapeService.addCircle(circle);
-        return new Resource<>(addedCircle,
-                linkTo(methodOn(ShapesResource.class).getCircle(addedCircle.getId())).withSelfRel(),
+
+        Link selfLink = linkTo(methodOn(ShapesResource.class).getCircle(addedCircle.getId())).withSelfRel();
+        Resource<Circle> responseBody =  new Resource<>(addedCircle,
+                selfLink,
                 linkTo(methodOn(ShapesResource.class).listCircles()).withRel("circles"));
+        return ResponseEntity.created(URI.create(selfLink.getHref())).body(responseBody);
     }
 
     @GetMapping("/rectangles")
-    public Resources<Resource<Rectangle>> listRectangles() {
+    public ResponseEntity listRectangles() {
         List<Resource<Rectangle>> rectangles = shapeService.listRectangles().stream()
                 .map(rectangle -> new Resource<>(rectangle,
                         linkTo(methodOn(ShapesResource.class).getRectangle(rectangle.getId())).withSelfRel(),
                         linkTo(methodOn(ShapesResource.class).listRectangles()).withRel("rectangles")))
                 .collect(Collectors.toList());
-        return new Resources<>(rectangles, linkTo(methodOn(ShapesResource.class).listRectangles()).withSelfRel());
+        Resources<Resource<Rectangle>> responseBody = new Resources<>(rectangles, linkTo(methodOn(ShapesResource.class).listRectangles()).withSelfRel());
+        return ResponseEntity.ok(responseBody);
     }
 
     @GetMapping("/rectangles/{id}")
-    public Resource<Rectangle> getRectangle(@PathVariable("id") Long id) {
+    public ResponseEntity getRectangle(@PathVariable("id") Long id) {
         Rectangle rectangle = shapeService.getRectangleById(id);
-        return new Resource<>(rectangle,
-                linkTo(methodOn(ShapesResource.class).getRectangle(rectangle.getId())).withSelfRel(),
-                linkTo(methodOn(ShapesResource.class).listRectangles()).withRel("rectangles"));
+
+        if (rectangle == null) {
+            return ResponseEntity.notFound().build();
+        } else {
+            Resource<Rectangle> responseBody = new Resource<>(rectangle,
+                    linkTo(methodOn(ShapesResource.class).getRectangle(rectangle.getId())).withSelfRel(),
+                    linkTo(methodOn(ShapesResource.class).listRectangles()).withRel("rectangles"));
+            return ResponseEntity.ok(responseBody);
+        }
     }
 
     @PostMapping("/rectangles")
-    public Resource<Rectangle> addRectangle(@RequestBody Rectangle rectangle) {
+    public ResponseEntity addRectangle(@RequestBody Rectangle rectangle) {
         Rectangle addedRectangle = shapeService.addRectangle(rectangle);
-        return new Resource<>(addedRectangle,
-                linkTo(methodOn(ShapesResource.class).getRectangle(addedRectangle.getId())).withSelfRel(),
+
+        Link selfLink = linkTo(methodOn(ShapesResource.class).getRectangle(addedRectangle.getId())).withSelfRel();
+        Resource<Rectangle> responseBody = new Resource<>(addedRectangle,
+                selfLink,
                 linkTo(methodOn(ShapesResource.class).listRectangles()).withRel("rectangles"));
+        return ResponseEntity.created(URI.create(selfLink.getHref())).body(responseBody);
     }
 
     @GetMapping("/triangles")
-    public Resources<Resource<Triangle>> listTriangles() {
+    public ResponseEntity listTriangles() {
         List<Resource<Triangle>> triangles = shapeService.listTriangles().stream()
                 .map(triangle -> new Resource<>(triangle,
                         linkTo(methodOn(ShapesResource.class).getTriangle(triangle.getId())).withSelfRel(),
                         linkTo(methodOn(ShapesResource.class).listTriangles()).withRel("triangles")))
                 .collect(Collectors.toList());
-        return new Resources<>(triangles, linkTo(methodOn(ShapesResource.class).listTriangles()).withSelfRel());
+        Resources<Resource<Triangle>> responseBody = new Resources<>(triangles, linkTo(methodOn(ShapesResource.class).listTriangles()).withSelfRel());
+        return ResponseEntity.ok(responseBody);
     }
 
     @GetMapping("/triangles/{id}")
-    public Resource<Triangle> getTriangle(@PathVariable("id") Long id) {
+    public ResponseEntity getTriangle(@PathVariable("id") Long id) {
         Triangle triangle = shapeService.getTriangleById(id);
-        return new Resource<>(triangle,
-                linkTo(methodOn(ShapesResource.class).getTriangle(triangle.getId())).withSelfRel(),
-                linkTo(methodOn(ShapesResource.class).listTriangles()).withRel("triangles"));
+
+        if (triangle == null) {
+            return ResponseEntity.notFound().build();
+        } else {
+            Resource<Triangle> responseBody = new Resource<>(triangle,
+                    linkTo(methodOn(ShapesResource.class).getTriangle(triangle.getId())).withSelfRel(),
+                    linkTo(methodOn(ShapesResource.class).listTriangles()).withRel("triangles"));
+            return ResponseEntity.ok(responseBody);
+        }
     }
 
     @PostMapping("/triangles")
-    public Resource<Triangle> addTriangle(@RequestBody Triangle triangle) {
+    public ResponseEntity addTriangle(@RequestBody Triangle triangle) {
         Triangle addedTriangle = shapeService.addTriangle(triangle);
-        return new Resource<>(addedTriangle,
-                linkTo(methodOn(ShapesResource.class).getTriangle(addedTriangle.getId())).withSelfRel(),
+
+        Link selfLink = linkTo(methodOn(ShapesResource.class).getTriangle(addedTriangle.getId())).withSelfRel();
+        Resource<Triangle> responseBody = new Resource<>(addedTriangle,
+                selfLink,
                 linkTo(methodOn(ShapesResource.class).listTriangles()).withRel("triangles"));
+        return ResponseEntity.created(URI.create(selfLink.getHref())).body(responseBody);
     }
 }

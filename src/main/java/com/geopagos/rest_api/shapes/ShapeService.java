@@ -1,6 +1,7 @@
 package com.geopagos.rest_api.shapes;
 
 import com.geopagos.rest_api.shapes.db.ShapeRepository;
+import com.geopagos.rest_api.shapes.entity.BaseShape;
 import com.geopagos.rest_api.shapes.entity.Circle;
 import com.geopagos.rest_api.shapes.entity.Rectangle;
 import com.geopagos.rest_api.shapes.entity.Triangle;
@@ -20,7 +21,12 @@ public class ShapeService {
     }
 
     public Circle getCircleById(Long id) {
-        return (Circle) shapeRepository.findOne(id);
+        BaseShape shape = shapeRepository.findOne(id);
+        if (shape instanceof Circle) {
+            return (Circle) shape;
+        } else {
+            return null;
+        }
     }
 
     public Circle addCircle(Circle circle) {
@@ -32,7 +38,12 @@ public class ShapeService {
     }
 
     public Rectangle getRectangleById(Long id) {
-        return (Rectangle) shapeRepository.findOne(id);
+        BaseShape shape = shapeRepository.findOne(id);
+        if (shape instanceof Rectangle) {
+            return (Rectangle) shape;
+        } else {
+            return null;
+        }
     }
 
     public Rectangle addRectangle(Rectangle rectangle) {
@@ -44,7 +55,12 @@ public class ShapeService {
     }
 
     public Triangle getTriangleById(Long id) {
-        return (Triangle) shapeRepository.findOne(id);
+        BaseShape shape = shapeRepository.findOne(id);
+        if (shape instanceof Triangle) {
+            return (Triangle) shape;
+        } else {
+            return null;
+        }
     }
 
     public Triangle addTriangle(Triangle triangle) {

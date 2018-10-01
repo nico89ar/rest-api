@@ -7,6 +7,7 @@ import com.geopagos.rest_api.shapes.entity.Triangle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.Resources;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,7 +16,7 @@ import java.util.stream.Collectors;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.*;
 
 @RestController
-@RequestMapping("/shapes")
+@RequestMapping(value = "/shapes", produces = {MediaType.APPLICATION_JSON_VALUE, "application/hal+json"})
 public class ShapesResource {
 
     @Autowired

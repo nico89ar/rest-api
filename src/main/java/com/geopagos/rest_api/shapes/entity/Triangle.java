@@ -1,6 +1,5 @@
 package com.geopagos.rest_api.shapes.entity;
 
-import com.geopagos.rest_api.shapes.Shape;
 import com.geopagos.rest_api.shapes.ShapeType;
 
 import javax.persistence.DiscriminatorValue;
@@ -8,7 +7,7 @@ import javax.persistence.Entity;
 
 @Entity
 @DiscriminatorValue("TRIANGLE")
-public class Triangle extends BaseShape implements Shape {
+public class Triangle extends BaseShape {
 
     private final Double base;
     private final Double height;

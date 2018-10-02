@@ -11,4 +11,6 @@ public interface Shape {
     Double getSurface();
 
     ShapeType getShapeType();
+
+    Long getId();
 }
